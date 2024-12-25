@@ -1,8 +1,8 @@
 # The below program is to guess the correct number between 1 to 100.
 import random
 
-def is_valid_number(s):
-    return s.isdigit() and 1 <= int(s) <= 100
+def is_valid_number(guessed_number):
+    return guessed_number.isdigit() and 1 <= int(guessed_number) <= 100
 
 def get_valid_input(prompt):
     while True:
