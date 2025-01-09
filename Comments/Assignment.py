@@ -6,15 +6,12 @@ from requests.packages.urllib3.util.retry import Retry
 
 def fetch_tumblr_blog_info(blog_name, start, end):
     try:
-        # Validating input range
         if start < 1 or end < start:
             print("Invalid range. Please enter a valid range.")
             return
 
-        # Constructing API endpoint URL
         url = f"https://{blog_name}.tumblr.com/api/read/json?type=photo&num={end - start + 1}&start={start - 1}"
 
-        # Configuring retries and timeouts
         session = requests.Session()
         retries = Retry(
             total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504]
@@ -24,21 +21,17 @@ def fetch_tumblr_blog_info(blog_name, start, end):
         # Making GET request to the Tumblr API with timeout
         response = session.get(url, timeout=10)
 
-        # Checking if response is successful
         if response.status_code != 200:
             print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
             return
 
-        # Extracting JSON data using regex to avoid extra content issues
         match = re.search(r"var tumblr_api_read = (.*);$", response.text)
         if not match:
             print("Failed to extract JSON data from response.")
             return
 
-        # Parsing extracted JSON
         data = json.loads(match.group(1))
 
-        # Extracting basic blog info
         blog_info = data["tumblelog"]
         title = blog_info.get("title", "N/A")
         description = blog_info.get("description", "N/A")
@@ -50,7 +43,6 @@ def fetch_tumblr_blog_info(blog_name, start, end):
         print(f"description: {description}")
         print(f"no of post: {total_posts}\n")
 
-        # Extracting posts and images
         posts = data["posts"]
         for index, post in enumerate(posts, start=start):
             if "photos" in post:
@@ -70,7 +62,6 @@ def fetch_tumblr_blog_info(blog_name, start, end):
 blog_name = input("Enter the Tumblr blog name: ").strip()
 range_input = input("Enter the range (start-end): ").strip()
 
-# Parsing range input
 try:
     start, end = map(int, range_input.split("-"))
     fetch_tumblr_blog_info(blog_name, start, end)
