@@ -1,33 +1,41 @@
 class Employee:
-    def __init__(self, emp_id, name, department, working):
-        self.emp_id = emp_id
+    def __init__(self, employee_id, name, department, is_active):
+        self.employee_id = employee_id
         self.name = name
         self.department = department
-        self.working = working
+        self.is_active = is_active
 
-    def terminate_employee(self):
-        self.working = False
+    def terminate(self):
+        self.is_active = False
 
-    def is_working(self):
-        return self.working
+    def is_active_employee(self):
+        return self.is_active
 
 
 class EmployeeRepository:
     @staticmethod
-    def save_to_database(employee):
-        print(f"Saving {employee.name} to database.")
+    def save(employee):
+        print(f"Saving {employee.name} to the database.")
 
 
 class EmployeeReport:
     @staticmethod
-    def generate_report_xml(employee):
-        return f"<employee><id>{employee.emp_id}</id><name>{employee.name}</name><department>{employee.department}</department></employee>"
+    def generate_xml_report(employee):
+        return (
+            f"<employee>"
+            f"<employee_id>{employee.employee_id}</employee_id>"
+            f"<name>{employee.name}</name>"
+            f"<department>{employee.department}</department>"
+            f"</employee>"
+        )
 
     @staticmethod
-    def generate_report_csv(employee):
-        return f"{employee.emp_id},{employee.name},{employee.department}"
+    def generate_csv_report(employee):
+        return f"{employee.employee_id},{employee.name},{employee.department}"
 
-emp = Employee(1, "John Doe", "IT", True)
-EmployeeRepository.save_to_database(emp)
-print(EmployeeReport.generate_report_xml(emp))
-print(EmployeeReport.generate_report_csv(emp))
+
+if __name__ == "__main__":
+    employee = Employee(1, "Tejas", "DE", True)
+    EmployeeRepository.save(employee)
+    print(EmployeeReport.generate_xml_report(employee))
+    print(EmployeeReport.generate_csv_report(employee))

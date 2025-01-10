@@ -1,8 +1,10 @@
 # The below program is to guess the correct number between 1 to 100.
 import random
 
+
 def is_valid_number(guessed_number):
     return guessed_number.isdigit() and 1 <= int(guessed_number) <= 100
+
 
 def get_valid_input(prompt):
     while True:
@@ -10,6 +12,7 @@ def get_valid_input(prompt):
         if is_valid_number(user_input):
             return int(user_input)
         print("Invalid input. Please enter a number between 1 and 100.")
+
 
 def play_game():
     target = random.randint(1, 100)
@@ -28,8 +31,10 @@ def play_game():
             print(f"Congratulations! You guessed it in {guess_count} attempts.")
             break
 
+
 def main():
     play_game()
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 # Find the floor of the expected value(mean) of the subarray from Left to Right.
 def process_queries():
     import sys
+
     input = sys.stdin.read
     data = input().splitlines()
 
@@ -20,6 +21,7 @@ def process_queries():
         query_results.append(str(mean_floor))
 
     sys.stdout.write("\n".join(query_results) + "\n")
+
 
 if __name__ == "__main__":
     process_queries()

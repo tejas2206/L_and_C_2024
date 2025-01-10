@@ -1,10 +1,11 @@
 # Does the provided Book class followed SRP?
-# Answer is NO, because of below reaseons:
+# Answer is NO, because of below reasons:
 # It handled book-related behavior such as getting the title, author, and page navigation.
 # It managed storage responsibilities, like saving the book to a file system.
 # It included location management, dealing with physical placement in a library.
 
-#Below is refactored code.
+
+# Below is refactored code.
 class Book:
     def __init__(self, title, author, pages):
         self._title = title
@@ -39,7 +40,7 @@ class Storage:
     @staticmethod
     def save(book):
         filename = f"/documents/{book.get_title()} - {book.get_author()}"
-        with open(filename, 'w') as file:
+        with open(filename, "w") as file:
             file.write(str(book.get_current_page()))
 
 
