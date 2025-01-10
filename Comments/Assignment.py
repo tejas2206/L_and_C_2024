@@ -4,6 +4,7 @@ import re
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
+
 def fetch_tumblr_blog_info(blog_name, start, end):
     try:
         if start < 1 or end < start:
@@ -58,6 +59,7 @@ def fetch_tumblr_blog_info(blog_name, start, end):
         print(f"Failed to parse JSON data: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
 
 blog_name = input("Enter the Tumblr blog name: ").strip()
 range_input = input("Enter the range (start-end): ").strip()
