@@ -23,9 +23,9 @@ class Employee:
         self._salary = salary
 
 
-employee = Employee()
+employee = Employee('Tejas', 22, 23.45)
 
-"""Is employee an object or a data structure? Why?
+#Is employee an object or a data structure? Why?
 
-It behaves more like a data structure because it only stores data with simple getters and setters without any real behavior. 
-A better object-oriented approach would include methods that operate on the data."""
+#It behaves more like a data structure because it only stores data with simple getters and setters without any real behavior. 
+#A better object-oriented approach would include methods that operate on the data."""
