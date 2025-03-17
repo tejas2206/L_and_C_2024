@@ -1,53 +1,74 @@
 from flask import Flask, request, jsonify
-import MySQLdb
+from order_calculations import compute_order_cost
+from db_operations import insert_order
+
 
 app = Flask(__name__)
 
-def get_db_connection():
-    return MySQLdb.connect(user='root', password='sHASHI&456',
-                           host='localhost', database='checkout_db')
 
-def calculate_shipping_cost(shipping_method):
-    if shipping_method == 'standard':
-        return 50.00
-    elif shipping_method == 'express':
-        return 100.00
-    else:
-        return 0.00
+def validate_order(order):
+    try:
+        product = str(order["product"])
+        price = float(order["price"])
+        quantity = int(order["quantity"])
+        shipping_method = str(order["shipping_method"])
 
-def calculate_totals(price, quantity, discount, shipping_cost):
-    sub_total = price * quantity
-    total_amount = sub_total - discount + shipping_cost
-    return sub_total, total_amount
+        return {
+            "product": product,
+            "price": price,
+            "quantity": quantity,
+            "shipping_method": shipping_method,
+        }, None
+    except (KeyError, ValueError) as e:
+        return None, str(e)
 
-@app.route('/create_order', methods=['POST'])
-def create_order():
+
+@app.route("/create_orders", methods=["POST"])
+def create_orders():
     data = request.get_json()
-    product = data['product']
-    price = data['price']
-    quantity = data['quantity']
-    shipping_method = data['shipping_method']
-    payment_method = data['payment_method']
-    discount = data['discount']
 
-    shipping_cost = calculate_shipping_cost(shipping_method)
-    sub_total, total_amount = calculate_totals(price, quantity, discount, shipping_cost)
+    if not isinstance(data, list):
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "Invalid input: Expected a list of orders",
+                }
+            ),
+            400,
+        )
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO orders (product, price, quantity, shipping_method, payment_method, discount, shipping_cost, sub_total, total_amount)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    ''', (product, price, quantity, shipping_method, payment_method, discount, shipping_cost, sub_total, total_amount))
-    conn.commit()
-    order_id = cursor.lastrowid
-    cursor.close()
-    conn.close()
+    order_ids = []
+    for order in data:
+        validated_order, error = validate_order(order)
+        if error:
+            return (
+                jsonify({"status": "error", "message": f"Invalid order data: {error}"}),
+                400,
+            )
 
-    return jsonify({
-        'message': 'Order created successfully',
-        'order_id': order_id,
-    })
+        final_order = compute_order_cost(validated_order)
 
-if __name__ == '__main__':
+        order_id, db_error = insert_order(final_order)
+        if db_error:
+            return (
+                jsonify({"status": "error", "message": f"Database error: {db_error}"}),
+                500,
+            )
+
+        order_ids.append(order_id)
+
+    return (
+        jsonify(
+            {
+                "status": "success",
+                "message": "Orders created successfully",
+                "order_ids": order_ids,
+            }
+        ),
+        201,
+    )
+
+
+if __name__ == "__main__":
     app.run(debug=True)
