@@ -17,6 +17,7 @@ def validate_order(order_data):
 
 @app.route("/create_orders_oop", methods=["POST"])
 def create_orders_oop():
+    """API to handle multiple order creation requests."""
     data = request.get_json()
 
     if not isinstance(data, list):
