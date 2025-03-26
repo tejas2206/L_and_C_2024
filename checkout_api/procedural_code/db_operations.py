@@ -76,6 +76,11 @@ def get_order(order_id):
         cursor.execute(FETCH_ORDER_CALCULATIONS, (order_id,))
         calculations = cursor.fetchone()
 
+        if calculations:
+            del calculations["discount"]
+            del calculations["sub_total"]
+            del calculations["shipping_method"]
+
         cursor.close()
         db_connection.close()
 

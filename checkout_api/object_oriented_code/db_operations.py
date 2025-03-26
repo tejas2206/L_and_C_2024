@@ -1,12 +1,5 @@
 import MySQLdb
 from config import DB_CONFIG
-from queries import (
-    INSERT_ORDER,
-    INSERT_ORDER_ITEM,
-    FETCH_ORDER,
-    FETCH_ORDER_ITEMS,
-    FETCH_ORDER_CALCULATIONS,
-)
 
 
 class DatabaseManager:

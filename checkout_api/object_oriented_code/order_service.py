@@ -12,7 +12,7 @@ from queries import (
 class OrderService:
     def create_order(self, order_data):
         """Creates an order in the database."""
-        order = Order(order_data["customer_name"], order_data["items"])
+        order = Order(order_data.customer_name, [vars(item) for item in order_data.items])
 
         order_id, error = DatabaseManager.execute_query(
             INSERT_ORDER, (order.customer_name,), return_last_id=True
@@ -53,6 +53,11 @@ class OrderService:
         calculations, _ = DatabaseManager.execute_query(
             FETCH_ORDER_CALCULATIONS, (order_id,), fetch_one=True
         )
+
+        if calculations:
+            del calculations["discount"]
+            del calculations["sub_total"]
+            del calculations["shipping_method"]
 
         order["items"] = items
         order.update(calculations)

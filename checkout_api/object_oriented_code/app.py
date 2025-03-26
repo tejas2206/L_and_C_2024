@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from order_service import OrderService
-from dto import validate_order_data
+from dto import OrderDTO
 
 app = Flask(__name__)
 order_service = OrderService()
@@ -10,7 +10,7 @@ order_service = OrderService()
 def create_order():
     """API endpoint to create orders"""
     data = request.get_json()
-    order_data, error = validate_order_data(data)
+    order_data, error = OrderDTO(data)
 
     if error:
         return jsonify({"status": "error", "message": error}), 400

@@ -6,17 +6,21 @@ def validate_order_data(data):
         return None, "Order must contain at least one item."
 
     try:
-        customer_name = str(data["customer_name"])
-        items = [
-            {
-                "product": str(item["product"]),
-                "price": float(item["price"]),
-                "quantity": int(item["quantity"]),
-            }
-            for item in data["items"]
-        ]
-
-        return {"customer_name": customer_name, "items": items}, None
+        order_dto = {
+            "customer_name": str(data["customer_name"]),
+            "items": [
+                transform_item_data(item) for item in data["items"]
+            ]
+        }
+        return order_dto, None
 
     except (KeyError, ValueError) as e:
         return None, f"Invalid order item: {str(e)}"
+
+
+def transform_item_data(item):
+    return {
+        "product": str(item["product"]),
+        "price": float(item["price"]),
+        "quantity": int(item["quantity"]),
+    }
